@@ -6,12 +6,44 @@ class BookList (resources: Resources) {
 
     var books: List<Book> =  listOf(
         Book(
-            title = "title1",
-            author = "author1"
+            title = "A Middle English Vocabulary",
+            author = "J.R.R. Tolkien"
         ),
         Book(
-            title = "title2",
-            author = "author2"
+            title = "Sir Gawain & The Green Knight",
+            author = "J.R.R. Tolkien"
+        ),
+        Book(
+            title = "The Hobbit: or There and Back Again.",
+            author = "J.R.R. Tolkien"
+        ),
+        Book(
+            title = "Farmer Giles of Ham",
+            author = "J.R.R. Tolkien"
+        ),
+        Book(
+            title = "The Fellowship of the Ring",
+            author = "J.R.R. Tolkien"
+        ),
+        Book(
+            title = "The Two Towers",
+            author = "J.R.R. Tolkien"
+        ),
+        Book(
+            title = "The Return of the King",
+            author = "J.R.R. Tolkien"
+        ),
+        Book(
+            title = "The Adventures of Tom Bombadil",
+            author = "J.R.R. Tolkien"
+        ),
+        Book(
+            title = "Ancrene Wisse",
+            author = "J.R.R. Tolkien"
+        ),
+        Book(
+            title = "Smith of Wootton Major",
+            author = "J.R.R. Tolkien"
         )
 
     )

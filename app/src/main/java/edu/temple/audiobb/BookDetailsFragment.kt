@@ -5,55 +5,50 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [BookDetailsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class BookDetailsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+class BookDetailsFragment : Fragment() {
+    private lateinit var imageView: ImageView
+    private lateinit var textView: TextView
+
+    override fun onStart() {
+        super.onStart()
+        val itemModel: bookModel = ViewModelProvider(requireActivity()).get(bookModel::class.java)
     }
+
+    private lateinit var layout:View
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_book_details, container, false)
+    ): View {
+
+        layout = inflater.inflate(R.layout.fragment_book_details, container, false)
+        //var DisplayItem = intent.getSerializableExtra("Items") as Item
+        imageView = layout.findViewById<ImageView>(R.id.imageView)
+        textView = layout.findViewById<TextView>(R.id.textView)
+
+        // imageView.setImageResource(DisplayItem.resourceId)
+        //textView.text = DisplayItem.description
+        ViewModelProvider(requireActivity())
+            .get(bookModel::class.java)
+            .getItem()?.observe(requireActivity(), {
+                changeItem(it)
+            })
+        return layout
+    }
+    private fun changeItem(_book:Book) {
+        imageView.setImageResource(_book.resourceId)
+        textView.text = _item.description
+
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment BookDetailsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            BookDetailsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
+
 }
