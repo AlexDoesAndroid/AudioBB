@@ -10,12 +10,12 @@ class bookModel: ViewModel() {
 
     val bookLiveData: MutableLiveData<Book> = MutableLiveData<Book>()
 
-    fun getItem(): LiveData<Book>? {
+    fun getBook(): LiveData<Book>? {
         bookLiveData
         return bookLiveData
     }
 
-    fun setItem(_book : Book){
+    fun setBook(_book : Book){
         bookLiveData
         bookLiveData.value = _book
     }

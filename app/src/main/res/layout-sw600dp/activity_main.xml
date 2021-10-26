@@ -10,10 +10,19 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
         android:name="edu.temple.audiobb.BookListFragment"
-        android:layout_width="415dp"
-        android:layout_height="735dp"
+        android:layout_width="957dp"
+        android:layout_height="864dp"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="-2dp"
-        tools:layout_editor_absoluteY="-3dp" />
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="-2dp" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView2"
+        android:name="edu.temple.audiobb.BookDetailsFragment"
+        android:layout_width="965dp"
+        android:layout_height="828dp"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="883dp"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
