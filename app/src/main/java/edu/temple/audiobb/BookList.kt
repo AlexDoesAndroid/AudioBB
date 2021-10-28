@@ -14,6 +14,7 @@ class BookList (): Serializable {
         val templist : List<Book> = listOf(_book)
         books  = books + _book
     }
+
     fun add(_books : List<Book>) {
         books = books + _books
     }

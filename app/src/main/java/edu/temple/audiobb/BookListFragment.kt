@@ -1,6 +1,7 @@
 package edu.temple.audiobb
 
 import android.os.Bundle
+import android.content.Intent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +10,6 @@ import android.widget.AdapterView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
 
 
 class BookListFragment : Fragment() {
@@ -36,13 +36,12 @@ class BookListFragment : Fragment() {
         val onClickListener = View.OnClickListener {
             val itemPosition = recyclerView.getChildAdapterPosition(it)
 
-            val bookList
             ViewModelProvider(requireActivity()).get(bookModel::class.java).setBook(books.get(itemPosition))
             (activity as EventInterface).selectionMade()
 
         }
-        
-        recyclerView.adapter = bookAdapter(requireActivity(), books, onClickListener)
+
+        recyclerView.adapter  = bookAdapter(requireActivity(), books, onClickListener)
         return layout
     }
 
