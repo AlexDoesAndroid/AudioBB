@@ -1,37 +1,22 @@
 package edu.temple.audiobb
 
-import android.content.res.Resources
 import java.io.Serializable
 
-class BookList (): Serializable {
-
-    var books: List<Book> =  listOf(
-
-    )
-
-    /* Adds flower to liveData and posts value. */
-    fun add(_book : Book) {
-        val templist : List<Book> = listOf(_book)
-        books  = books + _book
+class BookList : Serializable{
+    private val bookList : MutableList<Book> by lazy {
+        ArrayList()
     }
 
-    fun add(_books : List<Book>) {
-        books = books + _books
+    fun add(book: Book) {
+        bookList.add(book)
     }
 
-    /* Removes flower from liveData and posts value. */
-    fun remove(_book : Book) {
-        val templist : List<Book> = listOf(_book)
-        books - _book
+    fun remove(book: Book){
+        bookList.remove(book)
     }
 
-    /* Returns book given an ID. */
-    fun get(int: Int): Book {
-        return books[int]
-    }
+    operator fun get(index: Int) = bookList[index]
 
-    fun size(): Int {
-        return books.size
-    }
+    fun size() = bookList.size
 
 }
