@@ -1,85 +1,87 @@
 package edu.temple.audiobb
 
-
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.fragment.app.FragmentContainerView
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
-import edu.temple.audiobb.BookListFragment.Companion.newInstance
 
-class MainActivity : AppCompatActivity(), BookListFragment.DoubleLayout {
+class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface {
 
-    private val _Book = Book("", "")
-    private var doubleFragment = false
-    lateinit var bookViewModel: SelectedBookViewModel
+    private val isSingleContainer : Boolean by lazy{
+        findViewById<View>(R.id.container2) == null
+    }
+
+    private val selectedBookViewModel : SelectedBookViewModel by lazy {
+        ViewModelProvider(this).get(SelectedBookViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setTitle("AudioBB")
 
-        bookViewModel = ViewModelProvider(this).get(SelectedBookViewModel::class.java)
+        // Grab test data
+      //  val bookList = getBookList()
 
-        doubleFragment = findViewById<FragmentContainerView>(R.id.fragmentContainerView2) != null
+        // If we're switching from one container to two containers
+        // clear BookDetailsFragment from container1
+        if (supportFragmentManager.findFragmentById(R.id.container1) is BookDetailsFragment) {
+            supportFragmentManager.popBackStack()
+        }
 
-        //First load
+        // If this is the first time the activity is loading, go ahead and add a BookListFragment
         if (savedInstanceState == null) {
-            bookViewModel.setSelectedBook(_Book)
-
-            if (doubleFragment) {
-                //Don't add to back stack
+            supportFragmentManager.beginTransaction()
+                .add(R.id.container1, BookListFragment.newInstance(bookList))
+                .commit()
+        } else
+        // If activity loaded previously, there's already a BookListFragment
+        // If we have a single container and a selected book, place it on top
+            if (isSingleContainer && selectedBookViewModel.getSelectedBook().value != null) {
                 supportFragmentManager.beginTransaction()
-                    .add(R.id.fragmentContainerView1, ListFragment.newInstance(initBooks()))
-                    .commit()
-            } else {
-                supportFragmentManager.beginTransaction()
-                    .add(R.id.fragmentContainerView1, ListFragment.newInstance(initBooks()))
+                    .replace(R.id.container1, BookDetailsFragment())
+                    .setReorderingAllowed(true)
                     .addToBackStack(null)
                     .commit()
             }
-        }
 
-        //Double screen
-        if (doubleFragment) {
-
-            if (supportFragmentManager.findFragmentById(R.id.fragmentContainerView1) is DetailsFragment) {
-                supportFragmentManager.popBackStack()
-            }
-
-            //If was single, and is now double
-            if (supportFragmentManager.findFragmentById(R.id.fragmentContainerView2) == null) {
-
-                //Put RecyclerView back in fragmentContainerView1
-                supportFragmentManager.beginTransaction()
-                    .add(R.id.fragmentContainerView2, DetailsFragment.newInstance())
-                    .commit()
-            }
-        } else if (bkViewModel.getSelectedBook().value != _Book) {
-
+        // If we have two containers but no BookDetailsFragment, add one to container2
+        if (!isSingleContainer && supportFragmentManager.findFragmentById(R.id.container2) !is BookDetailsFragment)
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainerView1, DetailsFragment.newInstance())
-                .addToBackStack(null)
+                .add(R.id.container2, BookDetailsFragment())
                 .commit()
-        }
 
     }
 
-    private fun initBooks(): BookList {
-        val list = BookList()
-        val names = resources.getStringArray(R.array.bNames)
-        val authors = resources.getStringArray(R.array.bAuthors)
+    //private fun getBookList() : BookList {
+  //      val bookList = BookList()
+ //       bookList.add(Book("Book 0", "Author 9"))
+ //       bookList.add(Book("Book 1", "Author 8"))
+ //       bookList.add(Book("Book 2", "Author 7"))
+  //      bookList.add(Book("Book 3", "Author 6"))
+  //      bookList.add(Book("Book 4", "Author 5"))
+  //      bookList.add(Book("Book 5", "Author 4"))
+  //      bookList.add(Book("Book 6", "Author 3"))
+  //      bookList.add(Book("Book 7", "Author 3"))
+ //       bookList.add(Book("Book 8", "Author 2"))
+//        bookList.add(Book("Book 9", "Author 0"))
 
-        for (i in names.indices) {
-            list.add(Book(names[i], authors[i]))
-        }
+//        return bookList
+  //  }
 
-        return list
+    override fun onBackPressed() {
+        //clears selected book
+        selectedBookViewModel.setSelectedBook(null)
+        super.onBackPressed()
     }
 
-    override fun selectionMade() {
-        if (!doubleFragment) {
+    override fun bookSelected() {
+        // Perform a fragment replacement if we only have a single container
+        // when a book is selected
+
+        if (isSingleContainer) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainerView1, DetailsFragment.newInstance())
+                .replace(R.id.container1, BookDetailsFragment())
+                .setReorderingAllowed(true)
                 .addToBackStack(null)
                 .commit()
         }

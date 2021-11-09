@@ -10,6 +10,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AudioBB">
         <activity
+            android:name=".BookSearchActivity"
+            android:exported="false"
+            android:label="@string/title_activity_book_search"
+            android:theme="@style/Theme.AudioBB.NoActionBar" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
