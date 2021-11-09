@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
         setContentView(R.layout.activity_main)
 
         // Grab test data
-      //  val bookList = getBookList()
+        val bookList = getBookList()
 
         // If we're switching from one container to two containers
         // clear BookDetailsFragment from container1
@@ -52,21 +52,13 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
 
     }
 
-    //private fun getBookList() : BookList {
-  //      val bookList = BookList()
- //       bookList.add(Book("Book 0", "Author 9"))
- //       bookList.add(Book("Book 1", "Author 8"))
- //       bookList.add(Book("Book 2", "Author 7"))
-  //      bookList.add(Book("Book 3", "Author 6"))
-  //      bookList.add(Book("Book 4", "Author 5"))
-  //      bookList.add(Book("Book 5", "Author 4"))
-  //      bookList.add(Book("Book 6", "Author 3"))
-  //      bookList.add(Book("Book 7", "Author 3"))
- //       bookList.add(Book("Book 8", "Author 2"))
-//        bookList.add(Book("Book 9", "Author 0"))
+    private fun getBookList() : BookList {
+        val bookList = BookList()
+        bookList.add(Book("Book 0", "Author 9", 1, "https://i.imgur.com/H981AN7.jpg"))
 
-//        return bookList
-  //  }
+
+        return bookList
+    }
 
     override fun onBackPressed() {
         //clears selected book
