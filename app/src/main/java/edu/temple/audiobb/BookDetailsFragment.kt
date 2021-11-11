@@ -15,6 +15,16 @@ class BookDetailsFragment : Fragment() {
     lateinit var titleTextView: TextView
     lateinit var authorTextView: TextView
     lateinit var coverImageView: ImageView
+
+    companion object {
+        @JvmStatic
+        fun newInstance() = BookDetailsFragment()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -27,6 +37,7 @@ class BookDetailsFragment : Fragment() {
 
         return layout
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -45,6 +56,7 @@ class BookDetailsFragment : Fragment() {
             .get() // give it the context
             .load("https://i.imgur.com/H981AN7.jpg") // load the image
             .into(coverImageView) // select the ImageView to load it into
+
     }
 }
 
