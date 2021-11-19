@@ -13,7 +13,7 @@
         android:theme="@style/Theme.AudioBB">
         <activity
 
-            android:name=".BookSearchActivity"
+            android:name=".SearchActivity"
             android:exported="false"
             android:label="@string/title_activity_book_search"
             android:theme="@style/Theme.AppCompat.Dialog" />

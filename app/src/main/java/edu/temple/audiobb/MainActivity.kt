@@ -1,33 +1,25 @@
 package edu.temple.audiobb
 
-import android.app.Activity
-import android.app.Dialog
-import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.ImageButton
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.ListFragment
 import androidx.lifecycle.ViewModelProvider
-//import com.android.volley.Request
-//import com.android.volley.RequestQueue
-//import com.android.volley.toolbox.JsonArrayRequest
-//import com.android.volley.toolbox.Volley
-import edu.temple.audiobb.BookListFragment.Companion.newInstance
-import org.json.JSONException
-import org.json.JSONObject
-import java.lang.reflect.Array.newInstance
 
 class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface {
 
-    private var isTwoPane = false
-    var resultBookList = BookList()
+    private lateinit var bookListFragment : BookListFragment
+
+    private val searchRequest = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        supportFragmentManager.popBackStack()
+        it.data?.run {
+            bookListViewModel.copyBooks(getSerializableExtra(BookList.BOOKLIST_KEY) as BookList)
+            bookListFragment.bookListUpdated()
+        }
+
+    }
 
     private val isSingleContainer : Boolean by lazy{
         findViewById<View>(R.id.container2) == null
@@ -37,54 +29,61 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
         ViewModelProvider(this).get(SelectedBookViewModel::class.java)
     }
 
-    private val searchActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-            result -> if(result.resultCode == Activity.RESULT_OK){
-        resultBookList = result.data?.getSerializableExtra("bookList") as BookList
-        Log.d("Result Book List",  resultBookList.toString())
+    private val bookListViewModel : BookList by lazy {
+        ViewModelProvider(this).get(BookList::class.java)
     }
+
+    companion object {
+        const val BOOKLISTFRAGMENT_KEY = "BookListFragment"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        isTwoPane = findViewById<View>(R.id.container2) == null
+        // Grab test data
+        //getBookList()
 
-        findViewById<Button>(R.id.mainSearchButton).setOnClickListener{
-            searchActivityLauncher.launch(Intent(this, BookSearchActivity::class.java))
-            Log.d("Main Search Btn Clicked", "Search Activity Launched")
+        // If we're switching from one container to two containers
+        // clear BookDetailsFragment from container1
+        if (supportFragmentManager.findFragmentById(R.id.container1) is BookDetailsFragment
+            && selectedBookViewModel.getSelectedBook().value != null) {
+            supportFragmentManager.popBackStack()
         }
+
         // If this is the first time the activity is loading, go ahead and add a BookListFragment
         if (savedInstanceState == null) {
+            bookListFragment = BookListFragment()
             supportFragmentManager.beginTransaction()
-                .add(R.id.container1, newInstance(resultBookList))
+                .add(R.id.container1, bookListFragment, BOOKLISTFRAGMENT_KEY)
                 .commit()
-        } else
-        // If activity loaded previously, there's already a BookListFragment
-        // If we have a single container and a selected book, place it on top
-            if (isTwoPane && selectedBookViewModel.getSelectedBook().value != null) {
+        } else {
+            bookListFragment = supportFragmentManager.findFragmentByTag(BOOKLISTFRAGMENT_KEY) as BookListFragment
+            // If activity loaded previously, there's already a BookListFragment
+            // If we have a single container and a selected book, place it on top
+            if (isSingleContainer && selectedBookViewModel.getSelectedBook().value != null) {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.container1, BookDetailsFragment())
                     .setReorderingAllowed(true)
                     .addToBackStack(null)
                     .commit()
             }
-
-        // If we're switching from one container to two containers
-        // clear BookDetailsFragment from container1
-        if (supportFragmentManager.findFragmentById(R.id.container1) is BookDetailsFragment) {
-            supportFragmentManager.popBackStack()
         }
 
         // If we have two containers but no BookDetailsFragment, add one to container2
-        if (!isTwoPane && supportFragmentManager.findFragmentById(R.id.container2) !is BookDetailsFragment)
+        if (!isSingleContainer && supportFragmentManager.findFragmentById(R.id.container2) !is BookDetailsFragment)
             supportFragmentManager.beginTransaction()
                 .add(R.id.container2, BookDetailsFragment())
                 .commit()
+
+        findViewById<ImageButton>(R.id.searchButton).setOnClickListener {
+            searchRequest.launch(Intent(this, SearchActivity::class.java))
+        }
+
     }
 
     override fun onBackPressed() {
-        //clears selected book
+        // Backpress clears the selected book
         selectedBookViewModel.setSelectedBook(null)
         super.onBackPressed()
     }
